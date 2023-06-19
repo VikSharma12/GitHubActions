@@ -28,18 +28,14 @@ jobs:
           for username in "${usernames[@]}"
           do
             # Generate the authorization URL for each username
-            auth_url=$(sfdx force:org:display --verbose --targetusername "$username" --json | jq -r '.result.sfdxAuthUrl')
-
-            # Store the authorization URL in a temporary file
-            echo "$auth_url" > auth_url.tmp
-            echo "Current org: $username"
-            echo "Auth url: $auth_url"
-
+            echo "Current username: $username"
+            sfdx force:org:display -u "$username" --verbose --json > authFile.json
+            
             # Authorize the org using the stored URL
-            sfdx auth:sfdxurl:store -f auth_url.tmp
+            sfdx auth:sfdxurl:store -f authFile.json
 
             # Remove the temporary file
-            rm auth_url.tmp
+            rm authFile.json
 
             echo "Authorized org for username: $username"
           done
