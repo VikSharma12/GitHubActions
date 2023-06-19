@@ -5,11 +5,40 @@ on:
 permissions:
   pull-requests: write
 jobs:
-  build:
+  post_welcome_comment:
     name: Post welcome comment
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
-      - run: gh pr comment $PR_URL --body "Welcome to the repository!"
+      - run: gh pr comment $PR_URL --body "Welcome to the repo! Lets expand my knowledge"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
+  dump_contexts_to_log:
+    name: Dump contexts to log
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+      - name: Dump job context
+        run: echo '${{ toJSON(job) }}'
+      - name: Dump steps context
+        run: echo '${{ toJSON(steps) }}'
+      - name: Dump runner context
+        run: echo '${{ toJSON(runner) }}'
+      - name: Dump strategy context
+        run: echo '${{ toJSON(strategy) }}'
+      - name: Dump matrix context
+        run: echo '${{ toJSON(matrix) }}'
+  for_loop_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Loop over items
+        run: |
+          items=("item1" "item2" "item3")
+          for item in "${items[@]}"; do
+            echo "Processing ${item}"
+            # Perform actions specific to each item in the loop
+          done
