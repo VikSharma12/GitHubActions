@@ -22,7 +22,7 @@ jobs:
       - name: Loop through usernames and authorize orgs
         run: |
           # Define the list of usernames
-          usernames=("resilient-raccoon-w3bu8q.com" "cunning-badger-byrnx2.com")
+          usernames=("secrets.DXONE_AUTH_URL" "secrets.DXTWO_AUTH_URL")
 
           # Loop through the usernames
           for username in "${usernames[@]}"
@@ -30,4 +30,5 @@ jobs:
             # Generate the authorization URL for each username
             echo "Current username: $username"
             echo ${{secrets.DXONE_AUTH_URL}}
+            echo ${{$username}}
           done
