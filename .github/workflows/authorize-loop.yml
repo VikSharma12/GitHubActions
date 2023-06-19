@@ -32,6 +32,7 @@ jobs:
 
             # Store the authorization URL in a temporary file
             echo "$auth_url" > auth_url.tmp
+            echo "Current org: $username"
             echo "Auth url: $auth_url"
 
             # Authorize the org using the stored URL
