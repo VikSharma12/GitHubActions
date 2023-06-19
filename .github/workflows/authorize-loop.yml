@@ -1,0 +1,40 @@
+name: Authorize Salesforce Orgs
+
+on:
+  push:
+    branches:
+      - expand-workflow
+
+jobs:
+  authorize-orgs:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Install Salesforce CLI
+        run: |
+          curl -sL https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz | tar xJf -
+          ./sfdx/install
+
+      - name: Loop through usernames and authorize orgs
+        run: |
+          # Define the list of usernames
+          usernames=("resilient-raccoon-w3bu8q.com" "cunning-badger-byrnx2.com")
+
+          # Loop through the usernames
+          for username in "${usernames[@]}"
+          do
+            # Generate the authorization URL for each username
+            auth_url=$(sfdx force:org:display --verbose --targetusername "$username" --json | jq -r '.result.sfdxAuthUrl')
+
+            # Store the authorization URL in a temporary file
+            echo "$auth_url" > auth_url.tmp
+
+            # Authorize the org using the stored URL
+            sfdx auth:sfdxurl:store -f auth_url.tmp
+
+            # Remove the temporary file
+            rm auth_url.tmp
+
+            echo "Authorized org for username: $username"
+          done
