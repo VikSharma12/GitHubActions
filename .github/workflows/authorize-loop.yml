@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      MY_LIST: |
+      ORG_POOL: |
         ${{ secrets.DXONE_AUTH_URL }}
         ${{ secrets.DXTWO_AUTH_URL }}
         
@@ -26,6 +26,12 @@ jobs:
 
       - name: Loop through secrets and authorize orgs
         run: |
-          for item in $MY_LIST; do
-            echo "Item: $item"
+          for secret in $ORG_POOL; do
+            echo "Item: $secret"
+            
+            echo $secret > ./DEVHUB_SFDX_URL.txt
+            sfdx auth:sfdxurl:store -f ./DEVHUB_SFDX_URL.txt
+            rm -f ./DEVHUB_SFDX_URL.txt
+            
+            echo "Org Authorized"
           done
