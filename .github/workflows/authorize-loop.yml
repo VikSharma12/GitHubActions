@@ -29,13 +29,5 @@ jobs:
           do
             # Generate the authorization URL for each username
             echo "Current username: $username"
-            sfdx force:org:display -u "$username" --verbose --json > authFile.json
-            
-            # Authorize the org using the stored URL
-            sfdx auth:sfdxurl:store -f authFile.json
-
-            # Remove the temporary file
-            rm authFile.json
-
-            echo "Authorized org for username: $username"
+            echo ${{secrets.DXONE_AUTH_URL}}
           done
