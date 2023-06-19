@@ -8,7 +8,11 @@ on:
 jobs:
   authorize-orgs:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        secrets:
+          - ${{secrets.DXONE_AUTH_URL}}
+          - ${{secrets.DXTWO_AUTH_URL}}
     steps:
 
       - name: 'Install Salesforce CLI'
@@ -19,16 +23,9 @@ jobs:
           echo "$HOME/sfdx/bin" >> $GITHUB_PATH
           ~/sfdx/bin/sfdx version
 
-      - name: Loop through usernames and authorize orgs
-        run: |
-          # Define the list of usernames
-          usernames=("secrets.DXONE_AUTH_URL" "secrets.DXTWO_AUTH_URL")
-
-          # Loop through the usernames
-          for username in "${usernames[@]}"
-          do
-            # Generate the authorization URL for each username
-            echo "Current username: $username"
-            echo ${{secrets.DXONE_AUTH_URL}}
-            echo ${{$username}}
+      - name: Loop through secrets and authorize orgs
+       run: |
+          for secret in ${{ matrix.secrets }}; do
+            echo "The secret is: ${{ secrets[secret] }}"
+            # Perform operations with the secret
           done
