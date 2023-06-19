@@ -8,11 +8,12 @@ on:
 jobs:
   authorize-orgs:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        secrets:
-          - ${{secrets.DXONE_AUTH_URL}}
-          - ${{secrets.DXTWO_AUTH_URL}}
+    
+    env:
+      MY_LIST: |
+        ${{ secrets.DXONE_AUTH_URL }}
+        ${{ secrets.DXTWO_AUTH_URL }}
+        
     steps:
 
       - name: 'Install Salesforce CLI'
@@ -24,8 +25,7 @@ jobs:
           ~/sfdx/bin/sfdx version
 
       - name: Loop through secrets and authorize orgs
-       run: |
-          for secret in ${{ matrix.secrets }}; do
-            echo "The secret is: ${{ secrets[secret] }}"
-            # Perform operations with the secret
+        run: |
+          for item in $MY_LIST; do
+            echo "Item: $item"
           done
